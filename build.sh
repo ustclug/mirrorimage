@@ -7,7 +7,7 @@ has_modified(){
 
 ls build-*.sh |
 while read script; do
-    if has_modified $script; then
+    if has_modified $script || [[ $TRAVIS_EVENT_TYPE == "cron" ]] ; then
         . $script
     fi
 done
