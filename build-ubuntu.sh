@@ -11,4 +11,5 @@ RUN sed -i \
 PUSH ustclug/ubuntu:$tag
 EOF
 )
+    docker rmi -f $(docker images -q)
 done
