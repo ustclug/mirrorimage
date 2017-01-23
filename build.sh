@@ -5,10 +5,7 @@ has_modified(){
     [[ `git diff HEAD~ HEAD -- $file | wc -l` != 0 ]]
 }
 
-ls build-*.sh |
-while read script; do
-    if has_modified $script || [[ $TRAVIS_EVENT_TYPE == "cron" ]] ; then
-        . $script
-        docker rmi -f $(docker images -q)
-    fi
-done
+script=build-${IMAGE_NAME}.sh
+if has_modified $script || [[ $TRAVIS_EVENT_TYPE == "cron" ]] ; then
+    . $script
+fi
