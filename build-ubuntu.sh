@@ -2,6 +2,7 @@
 source common.sh
 docker-tags ubuntu | 
 while read tag; do
+    echo $tag | grep '-' > /dev/null && continue
     rocker build --push --auth $DOCKER_USER:$DOCKER_PASS -f <(cat << EOF
 FROM ubuntu:$tag
 RUN sed -i \
@@ -11,5 +12,4 @@ RUN sed -i \
 PUSH ustclug/ubuntu:$tag
 EOF
 )
-    docker rmi -f $(docker images -q)
 done
