@@ -2,7 +2,7 @@
 source common.sh
 docker-tags ubuntu | 
 while read tag; do
-    echo $tag | grep '-' > /dev/null && continue
+    echo $tag | grep -q '-' && continue
     rocker build --push --auth $DOCKER_USER:$DOCKER_PASS -f <(cat << EOF
 FROM ubuntu:$tag
 RUN sed -i \
