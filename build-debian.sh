@@ -1,6 +1,6 @@
 #!/bin/bash
 source common.sh
-docker-tags debian | 
+docker-tags debian |
 while read tag; do
     unset backports_list
     echo $tag | grep -qP -- '-\d{8}' && continue
@@ -9,7 +9,7 @@ while read tag; do
 FROM debian:$tag
 RUN sed -i \
     -e 's/deb.debian.org/mirrors.ustc.edu.cn/g' \
-    -e 's/security.debian.org/mirrors.ustc.edu.cn\/debian-security/g' \
+    -e 's/security.debian.org/mirrors.ustc.edu.cn/g' \
     /etc/apt/sources.list $backports_list
 PUSH ustclug/debian:$tag
 EOF
