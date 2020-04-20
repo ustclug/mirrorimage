@@ -9,6 +9,7 @@ has_modified(){
 }
 
 script=build-${IMAGE_NAME}.sh
-if has_modified $script || [[ $TRAVIS_EVENT_TYPE == "cron" ]] ; then
+if has_modified $script || [[ $TRAVIS_EVENT_TYPE == "cron" ]] || true ; then
+    docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
     . $script
 fi

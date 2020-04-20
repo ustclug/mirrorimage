@@ -1,13 +1,15 @@
 #!/bin/bash
 source common.sh
-docker-tags alpine | 
+docker-tags alpine |
 while read tag; do
-    rocker build --push --auth $DOCKER_USER:$DOCKER_PASS -f <(cat << EOF
+    dockerfile=$(mktemp)
+    cat << EOF > $dockerfile
 FROM alpine:$tag
 RUN sed -i \
     -e 's/dl-.*.alpinelinux.org/mirrors.ustc.edu.cn/g' \
     /etc/apk/repositories
-PUSH ustclug/alpine:$tag
 EOF
-)
+    docker build -f $dockerfile -t ustclug/alpine:$tag .
+    docker push ustclug/alpine:$tag
+    rm $dockerfile
 done
