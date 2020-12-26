@@ -24,6 +24,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50  # the same value as Travis CI
 
       - name: Run build script
         run: ./build.sh
