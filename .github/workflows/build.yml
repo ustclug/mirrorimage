@@ -27,3 +27,10 @@ jobs:
 
       - name: Run build script
         run: ./build.sh
+        env:
+          IMAGE_NAME: ${{ matrix.IMAGE_NAME }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+          COMMIT_FROM: ${{ github.event.before }}
+          COMMIT_TO: ${{ github.event.after }}
+          GITHUB_EVENT: ${{ github.event_name }}
