@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+  schedule:
+    - cron: '30 22 * * 0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: alpine
+          - IMAGE_NAME: centos
+          - IMAGE_NAME: debian
+          - IMAGE_NAME: fedora
+          - IMAGE_NAME: ubuntu
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run build script
+        run: ./build.sh
