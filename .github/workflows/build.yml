@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+  schedule:
+    - cron: '30 22 * * 0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: alpine
+          - IMAGE_NAME: centos
+          - IMAGE_NAME: debian
+          - IMAGE_NAME: fedora
+          - IMAGE_NAME: ubuntu
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50  # the same value as Travis CI
+
+      - name: Run build script
+        run: ./build.sh
+        env:
+          IMAGE_NAME: ${{ matrix.IMAGE_NAME }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+          COMMIT_FROM: ${{ github.event.before }}
+          COMMIT_TO: ${{ github.event.after }}
+          GITHUB_EVENT: ${{ github.event_name }}
