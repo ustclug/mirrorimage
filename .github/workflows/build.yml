@@ -23,7 +23,7 @@ jobs:
           - IMAGE_NAME: ubuntu
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 50  # the same value as Travis CI
 
