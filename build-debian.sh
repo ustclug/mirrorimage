@@ -18,6 +18,6 @@ RUN sed -i \
     /etc/apt/sources.list.d/debian.sources $backports_list
 EOF
     docker build -f $dockerfile -t ustclug/debian:$tag .
-    #docker push ustclug/debian:$tag
+    docker push ustclug/debian:$tag
     rm $dockerfile
 done
