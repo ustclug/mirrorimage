@@ -11,9 +11,13 @@ FROM debian:$tag
 RUN sed -i \
     -e 's/deb.debian.org/mirrors.ustc.edu.cn/g' \
     -e 's/security.debian.org/mirrors.ustc.edu.cn/g' \
-    /etc/apt/sources.list $backports_list
+    /etc/apt/sources.list $backports_list || \
+    sed -i \
+    -e 's/deb.debian.org/mirrors.ustc.edu.cn/g' \
+    -e 's/security.debian.org/mirrors.ustc.edu.cn/g' \
+    /etc/apt/sources.list.d/debian.sources $backports_list
 EOF
     docker build -f $dockerfile -t ustclug/debian:$tag .
-    docker push ustclug/debian:$tag
+    #docker push ustclug/debian:$tag
     rm $dockerfile
 done
