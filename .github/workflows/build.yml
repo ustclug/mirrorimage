@@ -27,6 +27,9 @@ jobs:
         with:
           fetch-depth: 50  # the same value as Travis CI
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Run build script
         run: ./build.sh
         env:

@@ -1,23 +1,35 @@
 #!/bin/bash
 
-docker-tags(){
-    image=library/$1
-    tags_js=$(curl -sSL "https://registry.hub.docker.com/v2/repositories/${image}/tags/")
-    if [ $? -ne 0 ]; then
-        echo "curl $image failed" >&2
-        return 1
-    fi
-    grep -oP '(?<="name":").+?(?=")' <(echo "$tags_js")
-    while next_page=$(grep -oP '(?<="next":").+?(?=")' <(echo "$tags_js") | sed 's/\\u0026/\&/' | xargs)
-    do
-        if [[ -z "$next_page" || "$next_page" == "null" ]]; then
-            break
-        fi
-        tags_js=$(curl -sSL "$next_page")
-        if [ $? -ne 0 ]; then
-            echo "curl $next_page failed" >&2
+one_year_ago="$(date -d "1 year ago" +%s)"
+parse-tags-js() {
+    is_empty=true
+    page_url="$(jq -r '.next' <<< "$tags_js")"
+    for result in $(jq -c '.results[]' <<< "$tags_js"); do
+        if ! date="$(date -d "$(jq -r '.last_updated' <<< "$result")" +%s)"; then
             return 1
         fi
-        grep -oP '(?<="name":").+?(?=")' <(echo "$tags_js")
+        if ! name="$(jq -r '.name' <<< "$result")"; then
+            return 1
+        fi
+        if (( date > one_year_ago )); then
+            echo "$name"
+            is_empty=false
+        fi
+    done
+}
+docker-tags(){
+    is_empty=false
+    image="library/$1"
+    page_url="https://registry.hub.docker.com/v2/repositories/${image}/tags/"
+    while [[ -n "$page_url" && "$page_url" != "null" && "$is_empty" != "true" ]]
+    do
+        if ! tags_js="$(curl -fsSL "$page_url")"; then
+            echo "curl $page_url failed" >&2
+            return 1
+        fi
+        if ! parse-tags-js; then
+            echo "parse json failed" >&2
+            return 1
+        fi
     done
 }
