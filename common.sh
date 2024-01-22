@@ -1,7 +1,7 @@
 #!/bin/bash
 
 one_year_ago="$(date -d "1 year ago" +%s)"
-parse_tags_js() {
+parse-tags-js() {
     is_empty=true
     page_url="$(jq -r '.next' <<< "$tags_js")"
     for result in $(jq -c '.results[]' <<< "$tags_js"); do
@@ -18,6 +18,7 @@ parse_tags_js() {
     done
 }
 docker-tags(){
+    is_empty=false
     image="library/$1"
     page_url="https://registry.hub.docker.com/v2/repositories/${image}/tags/"
     while [[ -n "$page_url" && "$page_url" != "null" && "$is_empty" != "true" ]]
@@ -26,7 +27,7 @@ docker-tags(){
             echo "curl $page_url failed" >&2
             return 1
         fi
-        if ! parse_tags_js; then
+        if ! parse-tags-js; then
             echo "parse json failed" >&2
             return 1
         fi
