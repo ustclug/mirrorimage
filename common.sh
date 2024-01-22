@@ -3,10 +3,14 @@
 one_year_ago=$(date -d "1 year ago" +%s)
 parse_tags_js() {
     is_empty=true
-    next_page=$(jq -r '.next' <(echo "$tags_js"))
+    page_url=$(jq -r '.next' <(echo "$tags_js"))
     for result in $(jq -c '.results[]' <(echo "$tags_js")); do
-        date=$(date -d "$(jq -r '.last_updated' <(echo "$result"))" +%s)
-        name=$(jq -r '.name' <(echo "$result"))
+        if ! date=$(date -d "$(jq -r '.last_updated' <(echo "$result"))" +%s); then
+            return 1
+        fi
+        if ! name=$(jq -r '.name' <(echo "$result")); then
+            return 1
+        fi
         if (( date > one_year_ago )); then
             echo "$name"
             is_empty=false
@@ -15,19 +19,16 @@ parse_tags_js() {
 }
 docker-tags(){
     image=library/$1
-    tags_js=$(curl -sSL "https://registry.hub.docker.com/v2/repositories/${image}/tags/")
-    if [ $? -ne 0 ]; then
-        echo "curl $image failed" >&2
-        return 1
-    fi
-    parse_tags_js
-    while [[ -n "$next_page" && "$next_page" != "null" && $is_empty == false ]]
+    page_url="https://registry.hub.docker.com/v2/repositories/${image}/tags/"
+    while [[ -n "$page_url" && "$page_url" != "null" && $is_empty != true ]]
     do
-        tags_js=$(curl -sSL "$next_page")
-        if [ $? -ne 0 ]; then
-            echo "curl $next_page failed" >&2
+        if ! tags_js=$(curl -sSL "$page_url"); then
+            echo "curl $page_url failed" >&2
             return 1
         fi
-        parse_tags_js
+        if ! parse_tags_js; then
+            echo "parse json failed" >&2
+            return 1
+        fi
     done
 }
