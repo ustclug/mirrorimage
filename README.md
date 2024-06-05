@@ -4,7 +4,7 @@ The fast way to use USTC mirrors in your container.
 
 ## Available distros
 
-`ustclug/ubuntu`, `ustclug/debian`, `ustclug/fedora`, `ustclug/centos`, `ustclug/alpine`.
+`ustclug/ubuntu`, `ustclug/debian`, `ustclug/fedora`, ~~`ustclug/centos`~~, `ustclug/rocky`, `ustclug/alpine`.
 
 ## Example
 
