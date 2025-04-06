@@ -17,6 +17,8 @@ RUN sed -i \
     /etc/yum.repos.d/rocky*.repo
 EOF
     docker build -f $dockerfile -t ustclug/rocky:$tag .
+    docker tag ustclug/rocky:$tag ghcr.io/ustclug/rocky:$tag
     docker push ustclug/rocky:$tag
+    docker push ghcr.io/ustclug/rocky:$tag
     rm $dockerfile
 done

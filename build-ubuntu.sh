@@ -16,6 +16,8 @@ RUN sed -i \
     /etc/apt/sources.list.d/ubuntu.sources || true
 EOF
     docker build -f $dockerfile -t ustclug/ubuntu:$tag .
+    docker tag ustclug/ubuntu:$tag ghcr.io/ustclug/ubuntu:$tag
     docker push ustclug/ubuntu:$tag
+    docker push ghcr.io/ustclug/ubuntu:$tag
     rm $dockerfile
 done

@@ -10,6 +10,8 @@ RUN sed -i \
     /etc/apk/repositories
 EOF
     docker build -f $dockerfile -t ustclug/alpine:$tag .
+    docker tag ustclug/alpine:$tag ghcr.io/ustclug/alpine:$tag
     docker push ustclug/alpine:$tag
+    docker push ghcr.io/ustclug/alpine:$tag
     rm $dockerfile
 done
