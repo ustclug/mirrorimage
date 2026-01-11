@@ -1,5 +1,6 @@
 #!/bin/bash
 source common.sh
+platforms="${PLATFORMS:-linux/amd64,linux/arm64}"
 docker-tags debian |
 while read tag; do
     unset backports_list
@@ -17,9 +18,9 @@ RUN sed -i \
     -e 's/security.debian.org/mirrors.ustc.edu.cn/g' \
     /etc/apt/sources.list.d/debian.sources $backports_list
 EOF
-    docker build -f $dockerfile -t ustclug/debian:$tag .
-    docker tag ustclug/debian:$tag ghcr.io/ustclug/debian:$tag
-    docker push ustclug/debian:$tag
-    docker push ghcr.io/ustclug/debian:$tag
+    docker buildx build --platform "$platforms" -f $dockerfile \
+        -t ustclug/debian:$tag \
+        -t ghcr.io/ustclug/debian:$tag \
+        --push .
     rm $dockerfile
 done

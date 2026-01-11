@@ -1,5 +1,6 @@
 #!/bin/bash
 source common.sh
+platforms="${PLATFORMS:-linux/amd64,linux/arm64}"
 docker-tags ubuntu |
 while read tag; do
     echo $tag | grep -q '-' && continue
@@ -15,9 +16,9 @@ RUN sed -i \
     -e 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' \
     /etc/apt/sources.list.d/ubuntu.sources || true
 EOF
-    docker build -f $dockerfile -t ustclug/ubuntu:$tag .
-    docker tag ustclug/ubuntu:$tag ghcr.io/ustclug/ubuntu:$tag
-    docker push ustclug/ubuntu:$tag
-    docker push ghcr.io/ustclug/ubuntu:$tag
+    docker buildx build --platform "$platforms" -f $dockerfile \
+        -t ustclug/ubuntu:$tag \
+        -t ghcr.io/ustclug/ubuntu:$tag \
+        --push .
     rm $dockerfile
 done
