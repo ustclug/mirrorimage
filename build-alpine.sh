@@ -1,5 +1,6 @@
 #!/bin/bash
 source common.sh
+platforms="${PLATFORMS:-linux/amd64,linux/arm64}"
 docker-tags alpine |
 while read tag; do
     dockerfile=$(mktemp)
@@ -9,9 +10,9 @@ RUN sed -i \
     -e 's/dl-.*.alpinelinux.org/mirrors.ustc.edu.cn/g' \
     /etc/apk/repositories
 EOF
-    docker build -f $dockerfile -t ustclug/alpine:$tag .
-    docker tag ustclug/alpine:$tag ghcr.io/ustclug/alpine:$tag
-    docker push ustclug/alpine:$tag
-    docker push ghcr.io/ustclug/alpine:$tag
+    docker buildx build --platform "$platforms" -f $dockerfile \
+        -t ustclug/alpine:$tag \
+        -t ghcr.io/ustclug/alpine:$tag \
+        --push .
     rm $dockerfile
 done
