@@ -1,11 +1,11 @@
 #!/bin/bash
 source common.sh
 platforms="${PLATFORMS:-linux/amd64,linux/arm64}"
-docker-tags rockylinux |
+docker-tags rockylinux/rockylinux |
 while read tag; do
     dockerfile=$(mktemp)
     cat << EOF > $dockerfile
-FROM rockylinux:$tag
+FROM rockylinux/rockylinux:$tag
 RUN sed -i \
     -e 's/mirrorlist/#mirrorlist/g' \
     -e 's/#baseurl/baseurl/g' \

@@ -19,7 +19,11 @@ parse-tags-js() {
 }
 docker-tags(){
     is_empty=false
-    image="library/$1"
+    if [[ "$1" == */* ]]; then
+        image="$1"
+    else
+        image="library/$1"
+    fi
     page_url="https://registry.hub.docker.com/v2/repositories/${image}/tags/"
     while [[ -n "$page_url" && "$page_url" != "null" && "$is_empty" != "true" ]]
     do
