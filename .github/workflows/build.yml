@@ -21,6 +21,7 @@ jobs:
           - IMAGE_NAME: debian
           - IMAGE_NAME: fedora
           - IMAGE_NAME: ubuntu
+          - IMAGE_NAME: archlinux
 
     steps:
       - uses: actions/checkout@v3
