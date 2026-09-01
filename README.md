@@ -4,7 +4,7 @@ The fast way to use USTC mirrors in your container.
 
 ## Available distros
 
-`ustclug/ubuntu`, `ustclug/debian`, `ustclug/fedora`, ~~`ustclug/centos`~~, `ustclug/rocky`, `ustclug/alpine`.
+`ustclug/ubuntu`, `ustclug/debian`, `ustclug/fedora`, ~~`ustclug/centos`~~, `ustclug/rocky`, `ustclug/alpine`, `ustclug/archlinux`.
 
 Also published on GHCR: Just prepend `ghcr.io/ustclug/` before the image name.
 
